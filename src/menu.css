@@ -1,0 +1,33 @@
+.menu-navegacao {
+    background-color: #343a40;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between; /* Separa Logo dos Botões */
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #00d2d3; 
+}
+
+.menu-navegacao button {
+    background: none;
+    border: 1px solid transparent;
+    color: #ddd;
+    padding: 10px 15px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.menu-navegacao button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: #fff;
+}

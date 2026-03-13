@@ -1,0 +1,47 @@
+/* 1. Reset para garantir que não há margens escondidas */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1a1a1a;
+}
+
+/* 2. O componente principal que segura tudo */
+.App {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}
+
+/* 3. Menu no topo */
+.menu-navegacao {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 20px;
+  background: #252525;
+}
+
+.menu-navegacao button {
+  background: #333;
+  border: 1px solid #646cff;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.menu-navegacao button.active {
+  background: #646cff;
+}
+
+/* 4. O segredo: Esta área ocupa o resto da tela e centraliza o filho */
+.conteudo-principal {
+  flex: 1;
+  display: flex;
+  align-items: center;     /* Centraliza Verticalmente */
+  justify-content: center; /* Centraliza Horizontalmente */
+  width: 100%;             /* Força a largura total */
+}
