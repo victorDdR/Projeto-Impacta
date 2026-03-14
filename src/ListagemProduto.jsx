@@ -11,25 +11,25 @@ const ListagemProdutos = ({ produtos, aoComprar, aoRemover }) => {
           {produtos.map((item) => (
             <div key={item.id} className="card-item">
               <div className="info">
-                <h4>{item.nome}</h4>
-                <span className="tipo-tag">{item.tipo}</span>
-                <p><strong>Marca:</strong> {item.marca}</p>
+                <h4>{item.product_name}</h4>
+                {/* <span className="tipo-tag">{item.tipo}</span> */}
+                <p><strong>Estoque:</strong> {item.stock}</p>
                 <p className="preco-destaque">
-                  {Number(item.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                  {Number(item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                 </p>
               </div>
               
-              <div className="botoes-card">
-                {/* BOTÃO COMPRAR - Usa a prop aoComprar */}
+              {/* <div className="botoes-card">
+                 BOTÃO COMPRAR - Usa a prop aoComprar 
                 <button className="btn-comprar" onClick={() => aoComprar(item)}>
                   Adicionar ao Carrinho
                 </button>
                 
-                {/* BOTÃO REMOVER - Usa a prop aoRemover */}
+                BOTÃO REMOVER - Usa a prop aoRemover
                 <button className="btn-remover" onClick={() => aoRemover(item.id)}>
                   Excluir do Catálogo
                 </button>
-              </div>
+              </div> */}
             </div>
           ))}
         </div>

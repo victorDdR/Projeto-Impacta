@@ -3,6 +3,8 @@ import CadastroProduto from './cadastroProduto';
 import ListagemProdutos from './ListagemProduto';
 import Carrinho from './Carrinho';
 import './App.css';
+import { PRODUTOS_INICIAIS } from './data/produtos';
+import { buscarProdutos } from './services/productService';
 
 function App() {
   const [tela, setTela] = useState('cadastro');
@@ -10,15 +12,29 @@ function App() {
   // Lista de produtos cadastrados (Persistente)
   const [listaProdutos, setListaProdutos] = useState(() => {
     const dados = localStorage.getItem('meusProdutos');
-    return dados ? JSON.parse(dados) : [];
+    return dados ? JSON.parse(dados) : PRODUTOS_INICIAIS;
   });
 
   // Itens que estão no carrinho
   const [carrinho, setCarrinho] = useState([]);
 
   useEffect(() => {
+    const carregarProdutos = async () => {
+      try {
+        const data = await buscarProdutos();
+        console.log(data);
+        setListaProdutos(data);
+      } catch (erro) {
+        console.error("Erro ao carregar produtos:", erro);
+      }
+    };
+
+    carregarProdutos();
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem('meusProdutos', JSON.stringify(listaProdutos));
-  }, [listaProdutos]);
+  }, [listaProdutos]);  
 
   // FUNÇÃO 1: Adicionar ao catálogo (vinda do Cadastro)
   const adicionarAoCatalogo = (novo) => {
