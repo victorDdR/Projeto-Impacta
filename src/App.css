@@ -1,47 +1,37 @@
-/* 1. Reset para garantir que não há margens escondidas */
-html, body, #root {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #1a1a1a;
-}
+:root { background-color: #1f1f1f; color: white; font-family: sans-serif; }
+.App { padding: 40px 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
 
-/* 2. O componente principal que segura tudo */
-.App {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100vh;
-}
+.menu-navegacao { margin-bottom: 30px; display: flex; gap: 15px; }
+.menu-navegacao button { padding: 12px 25px; cursor: pointer; border: none; background: #333; color: white; border-radius: 8px; font-weight: bold; transition: 0.2s; }
+.menu-navegacao button.active { background: #646cff; }
 
-/* 3. Menu no topo */
-.menu-navegacao {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  padding: 20px;
-  background: #252525;
-}
+/* Contêineres centralizados */
+.conteudo-principal, .container-vitrine { width: 100%; display: flex; justify-content: center; }
 
-.menu-navegacao button {
-  background: #333;
-  border: 1px solid #646cff;
-  color: white;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 6px;
-}
+/* Cadastro */
+.card-cadastro { background: white; color: #333; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); box-sizing: border-box; }
+.card-cadastro h2 { margin-top: 0; text-align: center; }
+.campo { margin-bottom: 15px; text-align: left; }
+.campo label { display: block; font-size: 14px; font-weight: bold; margin-bottom: 5px; color: #444; }
+.campo input, .campo select { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; }
 
-.menu-navegacao button.active {
-  background: #646cff;
+/* Vitrine e Cards */
+.grid-produtos { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+  gap: 25px; 
+  width: 100%; 
+  max-width: 1200px; 
 }
+.card-item { background: white; color: #333; padding: 25px; border-radius: 12px; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: flex; flex-direction: column; justify-content: space-between; }
+.id-tag { font-size: 11px; color: #888; display: block; margin-bottom: 10px; }
+.card-item h4 { margin: 0 0 10px 0; font-size: 1.4rem; color: #111; }
+.detalhes { font-size: 14px; color: #555; line-height: 1.5; margin-bottom: 10px; }
+.estoque-label { margin: 10px 0; font-size: 15px; background: #f0f0f0; padding: 8px; border-radius: 6px; display: inline-block; }
+.preco-destaque { color: #2e7d32; font-weight: bold; font-size: 1.5rem; margin: 15px 0; }
 
-/* 4. O segredo: Esta área ocupa o resto da tela e centraliza o filho */
-.conteudo-principal {
-  flex: 1;
-  display: flex;
-  align-items: center;     /* Centraliza Verticalmente */
-  justify-content: center; /* Centraliza Horizontalmente */
-  width: 100%;             /* Força a largura total */
-}
+/* Botões */
+.btn-cadastrar { background: #646cff; color: white; width: 100%; border: none; padding: 14px; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 16px; margin-top: 10px; }
+.btn-excluir { background: #ff4d4d; color: white; width: 100%; border: none; padding: 12px; cursor: pointer; border-radius: 8px; font-weight: bold; transition: 0.2s; }
+.btn-excluir:hover { background: #d32f2f; }
+.msg-vazia { grid-column: 1/-1; color: #ccc; font-size: 1.2rem; text-align: center; }
