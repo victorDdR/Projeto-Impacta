@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import CadastroProduto from './CadastroProduto';
+import CadastroProduto from './cadastroProduto';
 import ListagemProdutos from './ListagemProduto';
 import './App.css';
 
 function App() {
   const [tela, setTela] = useState('cadastro');
   const [listaProdutos, setListaProdutos] = useState(() => {
-    const salvos = localStorage.getItem('estoque_seguro');
+    const salvos = localStorage.getItem('estoque_v5');
     return salvos ? JSON.parse(salvos) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem('estoque_seguro', JSON.stringify(listaProdutos));
+    localStorage.setItem('estoque_v5', JSON.stringify(listaProdutos));
   }, [listaProdutos]);
 
   const adicionarOuSomar = (novo) => {
     const novaLista = [...listaProdutos];
     
-    // Procura na lista se o produto já existe (Nome, Marca e Categoria iguais)
+    // Procura na lista se o produto já existe (Nome e Categoria iguais)
     const indice = novaLista.findIndex(p => 
       p.nome.trim().toLowerCase() === novo.nome.trim().toLowerCase() &&
-      p.marca.trim().toLowerCase() === novo.marca.trim().toLowerCase() &&
       p.categoria === novo.categoria
     );
 
@@ -31,7 +30,7 @@ function App() {
       setListaProdutos(novaLista);
       alert("Produto já cadastrado! Estoque atualizado com sucesso.");
     } else {
-      // Se não existe, cria um card novo com um ID de 8 dígitos
+      // Se não existe, cria um card novo com um ID gerado
       const produtoFinal = { 
         ...novo, 
         id: Math.floor(10000000 + Math.random() * 90000000) 

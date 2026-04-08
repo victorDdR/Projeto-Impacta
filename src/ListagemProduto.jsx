@@ -13,7 +13,6 @@ const ListagemProdutos = ({ produtos, aoRemover }) => {
                 <span className="id-tag">ID: #{p.id}</span>
                 <h4>{p.nome}</h4>
                 <p className="detalhes">
-                  <strong>Marca:</strong> {p.marca} <br/>
                   <strong>Categoria:</strong> {p.categoria}
                 </p>
                 <p className="estoque-label">
