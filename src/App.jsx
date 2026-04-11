@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import CadastroProduto from './cadastroProduto';
 import ListagemProdutos from './ListagemProduto';
-import Carrinho from './Carrinho';
 import './App.css';
 import { PRODUTOS_INICIAIS } from './data/produtos';
 import { buscarProdutos } from './services/productService';
 
 function App() {
   const [tela, setTela] = useState('cadastro');
-  
-  // Lista de produtos cadastrados (Persistente)
   const [listaProdutos, setListaProdutos] = useState(() => {
     const dados = localStorage.getItem('meusProdutos');
     return dados ? JSON.parse(dados) : PRODUTOS_INICIAIS;
   });
-
-  // Itens que estão no carrinho
-  const [carrinho, setCarrinho] = useState([]);
 
   useEffect(() => {
     const carregarProdutos = async () => {
@@ -36,54 +30,56 @@ function App() {
     localStorage.setItem('meusProdutos', JSON.stringify(listaProdutos));
   }, [listaProdutos]);  
 
-  // FUNÇÃO 1: Adicionar ao catálogo (vinda do Cadastro)
-  const adicionarAoCatalogo = (novo) => {
-    setListaProdutos([...listaProdutos, { ...novo, id: Date.now() }]);
+  const adicionarOuSomar = (novo) => {
+    const novaLista = [...listaProdutos];
+    
+    // Procura na lista se o produto já existe (Nome e Categoria iguais)
+    const indice = novaLista.findIndex(p => 
+      p.nome.trim().toLowerCase() === novo.nome.trim().toLowerCase() &&
+      p.categoria === novo.categoria
+    );
+
+    if (indice !== -1) {
+      // Se existe, soma a quantidade e atualiza o preço
+      novaLista[indice].estoque = Number(novaLista[indice].estoque) + Number(novo.estoque);
+      novaLista[indice].preco = novo.preco; 
+      setListaProdutos(novaLista);
+      alert("Produto já cadastrado! Estoque atualizado com sucesso.");
+    } else {
+      // Se não existe, cria um card novo com um ID gerado
+      const produtoFinal = { 
+        ...novo, 
+        id: Math.floor(10000000 + Math.random() * 90000000) 
+      };
+      setListaProdutos([...listaProdutos, produtoFinal]);
+    }
     setTela('listagem');
   };
 
-  // FUNÇÃO 2: Remover do catálogo (vinda da Vitrine)
-  const removerDoCatalogo = (id) => {
+  const remover = (id) => {
     setListaProdutos(listaProdutos.filter(p => p.id !== id));
-  };
-
-  // FUNÇÃO 3: Adicionar ao Carrinho (vinda da Vitrine)
-  const adicionarAoCarrinho = (produto) => {
-    setCarrinho([...carrinho, { ...produto, cartId: Date.now() }]);
-    alert(`${produto.nome} foi para o carrinho!`);
-  };
-
-  // FUNÇÃO 4: Remover do Carrinho (vinda da tela Carrinho)
-  const removerDoCarrinho = (cartId) => {
-    setCarrinho(carrinho.filter(item => item.cartId !== cartId));
   };
 
   return (
     <div className="App">
       <nav className="menu-navegacao">
-        <button onClick={() => setTela('cadastro')} className={tela === 'cadastro' ? 'active' : ''}>Cadastrar</button>
-        <button onClick={() => setTela('listagem')} className={tela === 'listagem' ? 'active' : ''}>Vitrine ({listaProdutos.length})</button>
-        <button onClick={() => setTela('carrinho')} className={tela === 'carrinho' ? 'active' : ''}>
-          🛒 Carrinho ({carrinho.length})
+        <button 
+          onClick={() => setTela('cadastro')} 
+          className={tela === 'cadastro' ? 'active' : ''}
+        >
+          Cadastrar Produto
+        </button>
+        <button 
+          onClick={() => setTela('listagem')} 
+          className={tela === 'listagem' ? 'active' : ''}
+        >
+          Vitrine ({listaProdutos.length})
         </button>
       </nav>
-
+      
       <main className="conteudo-principal">
-        {tela === 'cadastro' && (
-          <CadastroProduto aoCadastrar={adicionarAoCatalogo} />
-        )}
-        
-        {tela === 'listagem' && (
-          <ListagemProdutos 
-            produtos={listaProdutos} 
-            aoComprar={adicionarAoCarrinho} 
-            aoRemover={removerDoCatalogo} 
-          />
-        )}
-        
-        {tela === 'carrinho' && (
-          <Carrinho itens={carrinho} aoRemover={removerDoCarrinho} />
-        )}
+        {tela === 'cadastro' && <CadastroProduto aoCadastrar={adicionarOuSomar} />}
+        {tela === 'listagem' && <ListagemProdutos produtos={listaProdutos} aoRemover={remover} />}
       </main>
     </div>
   );

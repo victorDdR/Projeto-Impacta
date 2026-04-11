@@ -1,39 +1,34 @@
 import React from 'react';
 
-const ListagemProdutos = ({ produtos, aoComprar, aoRemover }) => {
+const ListagemProdutos = ({ produtos, aoRemover }) => {
   return (
-    <div className="secao-lista">
-      <h3>Vitrine de Produtos</h3>
-      {produtos.length === 0 ? (
-        <p className="vazio">Nenhum produto encontrado.</p>
-      ) : (
-        <div className="grid-produtos">
-          {produtos.map((item) => (
-            <div key={item.id} className="card-item">
-              <div className="info">
-                <h4>{item.product_name}</h4>
-                {/* <span className="tipo-tag">{item.tipo}</span> */}
-                <p><strong>Estoque:</strong> {item.stock}</p>
+    <div className="container-vitrine">
+      <div className="grid-produtos">
+        {produtos.length === 0 ? (
+          <p className="msg-vazia">Não há produtos em estoque no momento.</p>
+        ) : (
+          produtos.map(p => (
+            <div key={p.id} className="card-item">
+              <div className="card-info">
+                <span className="id-tag">ID: #{p.id}</span>
+                <h4>{p.nome}</h4>
+                <p className="detalhes">
+                  <strong>Categoria:</strong> {p.categoria}
+                </p>
+                <p className="estoque-label">
+                  <strong>Estoque:</strong> {p.estoque} unidades
+                </p>
                 <p className="preco-destaque">
-                  {Number(item.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                  R$ {Number(p.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </p>
               </div>
-              
-              {/* <div className="botoes-card">
-                 BOTÃO COMPRAR - Usa a prop aoComprar 
-                <button className="btn-comprar" onClick={() => aoComprar(item)}>
-                  Adicionar ao Carrinho
-                </button>
-                
-                BOTÃO REMOVER - Usa a prop aoRemover
-                <button className="btn-remover" onClick={() => aoRemover(item.id)}>
-                  Excluir do Catálogo
-                </button>
-              </div> */}
+              <button className="btn-excluir" onClick={() => aoRemover(p.id)}>
+                Excluir Produto
+              </button>
             </div>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 };
