@@ -1,14 +1,22 @@
 export const PRODUTOS_INICIAIS = [
   {
     id: 1,
-    product_name: "Leite Integral",
+    productName: "Leite Integral",
     stock: 3,
-    price: 5.90
+    price: 5.90,
+    category: {
+      id: 1,
+      name: "Lactícinios"
+    }
   },
   {
     id: 2,
-    product_name: "Arroz Branco 5kg",
+    productName: "Arroz Branco 5kg",
     stock: 4,
-    price: 24.50
+    price: 24.50,
+    category: {
+      id: 1,
+      name: "Grãos"
+    }
   }
 ];

@@ -1,9 +1,9 @@
-.menu-navegacao {
+.container {
     background-color: #343a40;
     color: white;
     padding: 1rem 2rem;
     display: flex;
-    justify-content: space-between; /* Separa Logo dos Botões */
+    justify-content: space-between; /* Logo de um lado, botões do outro */
     align-items: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
@@ -11,10 +11,14 @@
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #00d2d3; 
+    color: #00d2d3;
 }
 
-.menu-navegacao button {
+.buttons {
+    display: flex;
+}
+
+.button {
     background: none;
     border: 1px solid transparent;
     color: #ddd;
@@ -26,7 +30,7 @@
     transition: 0.3s;
 }
 
-.menu-navegacao button:hover {
+.button:hover {
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
     border-color: #fff;

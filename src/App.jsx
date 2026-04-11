@@ -1,86 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import CadastroProduto from './cadastroProduto';
-import ListagemProdutos from './ListagemProduto';
-import './App.css';
-import { PRODUTOS_INICIAIS } from './data/produtos';
-import { buscarProdutos } from './services/productService';
+import { Routes, Route } from 'react-router-dom';
+
+import Menu from './components/Menu/Menu';
+import ListagemProdutos from './pages/ListagemProdutos/ListagemProdutos';
 
 function App() {
-  const [tela, setTela] = useState('cadastro');
-  const [listaProdutos, setListaProdutos] = useState(() => {
-    const dados = localStorage.getItem('meusProdutos');
-    return dados ? JSON.parse(dados) : PRODUTOS_INICIAIS;
-  });
-
-  useEffect(() => {
-    const carregarProdutos = async () => {
-      try {
-        const data = await buscarProdutos();
-        console.log(data);
-        setListaProdutos(data);
-      } catch (erro) {
-        console.error("Erro ao carregar produtos:", erro);
-      }
-    };
-
-    carregarProdutos();
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('meusProdutos', JSON.stringify(listaProdutos));
-  }, [listaProdutos]);  
-
-  const adicionarOuSomar = (novo) => {
-    const novaLista = [...listaProdutos];
-    
-    // Procura na lista se o produto já existe (Nome e Categoria iguais)
-    const indice = novaLista.findIndex(p => 
-      p.nome.trim().toLowerCase() === novo.nome.trim().toLowerCase() &&
-      p.categoria === novo.categoria
-    );
-
-    if (indice !== -1) {
-      // Se existe, soma a quantidade e atualiza o preço
-      novaLista[indice].estoque = Number(novaLista[indice].estoque) + Number(novo.estoque);
-      novaLista[indice].preco = novo.preco; 
-      setListaProdutos(novaLista);
-      alert("Produto já cadastrado! Estoque atualizado com sucesso.");
-    } else {
-      // Se não existe, cria um card novo com um ID gerado
-      const produtoFinal = { 
-        ...novo, 
-        id: Math.floor(10000000 + Math.random() * 90000000) 
-      };
-      setListaProdutos([...listaProdutos, produtoFinal]);
-    }
-    setTela('listagem');
-  };
-
-  const remover = (id) => {
-    setListaProdutos(listaProdutos.filter(p => p.id !== id));
-  };
-
   return (
-    <div className="App">
-      <nav className="menu-navegacao">
-        <button 
-          onClick={() => setTela('cadastro')} 
-          className={tela === 'cadastro' ? 'active' : ''}
-        >
-          Cadastrar Produto
-        </button>
-        <button 
-          onClick={() => setTela('listagem')} 
-          className={tela === 'listagem' ? 'active' : ''}
-        >
-          Vitrine ({listaProdutos.length})
-        </button>
-      </nav>
-      
-      <main className="conteudo-principal">
-        {tela === 'cadastro' && <CadastroProduto aoCadastrar={adicionarOuSomar} />}
-        {tela === 'listagem' && <ListagemProdutos produtos={listaProdutos} aoRemover={remover} />}
-      </main>
+    <div>
+      <Menu />
+
+      <Routes>
+        <Route path="/" element={<ListagemProdutos />} />
+        <Route path="/produtos" element={<ListagemProdutos />} />
+      </Routes>
     </div>
   );
 }
