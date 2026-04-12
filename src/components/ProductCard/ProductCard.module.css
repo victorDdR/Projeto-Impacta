@@ -1,0 +1,64 @@
+.card {
+  background: white;
+  color: #333;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: left;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.id {
+  font-size: 11px;
+  color: #888;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.title {
+  margin: 0 0 10px 0;
+  font-size: 1.4rem;
+  color: #111;
+}
+
+.details {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.stock {
+  margin: 10px 0;
+  font-size: 15px;
+  background: #f0f0f0;
+  padding: 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.price {
+  color: #2e7d32;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin: 15px 0;
+}
+
+.deleteButton {
+  background: #ff4d4d;
+  color: white;
+  width: 100%;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.deleteButton:hover {
+  background: #d32f2f;
+}
