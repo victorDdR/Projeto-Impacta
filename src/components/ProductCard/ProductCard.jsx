@@ -1,9 +1,23 @@
+import { deletarProduto } from '../../api/ProductAPI';
 import styles from './ProductCard.module.css';
 
-function ProductCard({ produto, aoRemover }) {
+function ProductCard({ produto, onDelete}) {
   const precoFormatado = Number(produto.price).toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
   });
+
+  const remover = async () => {
+    const confirmacao = window.confirm('Tem certeza que deseja excluir?');
+    if (!confirmacao) return;
+
+    try {
+      await deletarProduto(produto.id);
+      alert(`Produto: ${produto.id}: ${produto.productName} Deletado.`)
+      onDelete();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className={styles.card}>
@@ -25,7 +39,7 @@ function ProductCard({ produto, aoRemover }) {
 
       <button
         className={styles.deleteButton}
-        onClick={() => aoRemover(produto.id)}
+        onClick={remover}
       >
         Excluir Produto
       </button>

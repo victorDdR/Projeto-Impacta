@@ -43,3 +43,14 @@ export async function criarProduto(produto) {
   }
 
 }
+
+export async function deletarProduto(produtoId) {
+  const response = await fetch(`${API_URL}/products/${produtoId}/delete`, {
+    method: 'DELETE'
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao buscar produtos");
+  }
+
+}

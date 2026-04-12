@@ -8,40 +8,28 @@ import { PRODUTOS_INICIAIS } from '../../data/produtos';
 function ListagemProdutos() {
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const carregarProdutos = async () => {
+    try {
+      const data = await buscarProdutos();
+      //const data = PRODUTOS_INICIAIS
+      setProdutos(data);
+
+      localStorage.setItem('produtos', JSON.stringify(data));
+    } catch (erro) {
+      console.error("Erro ao carregar produtos:", erro);
+
+      const cache = localStorage.getItem('produtos');
+      if (cache) {
+        setProdutos(JSON.parse(cache));
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const carregarProdutos = async () => {
-      try {
-        const data = await buscarProdutos();
-        //const data = PRODUTOS_INICIAIS
-        setProdutos(data);
-
-        localStorage.setItem('produtos', JSON.stringify(data));
-      } catch (erro) {
-        console.error("Erro ao carregar produtos:", erro);
-
-        const cache = localStorage.getItem('produtos');
-        if (cache) {
-          setProdutos(JSON.parse(cache));
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
     carregarProdutos();
   }, []);
-  
-  const removerProduto = (id) => {
-    setProdutos((prev) => {
-      const novaLista = prev.filter((p) => p.id !== id);
-
-      // atualiza cache junto
-      localStorage.setItem('produtos', JSON.stringify(novaLista));
-
-      return novaLista;
-    });
-  };
   
   if (loading) {
     return (
@@ -61,6 +49,10 @@ function ListagemProdutos() {
     );
   }
 
+  const handleDelete = async () => {
+    await carregarProdutos();
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.grid}>
@@ -68,7 +60,7 @@ function ListagemProdutos() {
           <ProductCard
             key={produto.id}
             produto={produto}
-            aoRemover={removerProduto}
+            onDelete={handleDelete}
           />
         ))}
       </div>
