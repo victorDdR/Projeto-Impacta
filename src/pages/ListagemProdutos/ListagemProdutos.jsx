@@ -12,8 +12,8 @@ function ListagemProdutos() {
   useEffect(() => {
     const carregarProdutos = async () => {
       try {
-        //const data = await buscarProdutos();
-        const data = PRODUTOS_INICIAIS
+        const data = await buscarProdutos();
+        //const data = PRODUTOS_INICIAIS
         setProdutos(data);
 
         localStorage.setItem('produtos', JSON.stringify(data));
