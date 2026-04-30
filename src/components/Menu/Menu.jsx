@@ -18,6 +18,7 @@ function Menu() {
         <Link to="/compras" className={styles.button}>
           Registrar Venda
         </Link>
+        
       </div>
     </div>
   );
