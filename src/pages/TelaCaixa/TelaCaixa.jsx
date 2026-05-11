@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './TelaCaixa.css';
-// Se quiser usar o CSS Module depois, você pode criar o TelaCaixa.module.css
+import { PRODUTOS_INICIAIS } from '../../data/produtos';
+import { vender } from '../../api/SaleAPI';
 
 const TelaCaixa = () => {
   const [carrinho, setCarrinho] = useState([]);
@@ -8,18 +9,20 @@ const TelaCaixa = () => {
   const [quantidadeDesejada, setQuantidadeDesejada] = useState(1);
   const [valorPago, setValorPago] = useState('');
   const [dataHora, setDataHora] = useState(new Date());
-  const [codVenda, setCodVenda] = useState(() => Math.floor(Math.random() * 9000) + 1000);
-
-  // Puxa o estoque salvo no navegador (ajuste se o seu colega mudou o nome da chave)
-  const [estoque, setEstoque] = useState(() => {
-    const salvos = localStorage.getItem('estoque_v5');
-    return salvos ? JSON.parse(salvos) : [];
-  });
 
   useEffect(() => {
     const timer = setInterval(() => setDataHora(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const [estoque, setEstoque] = useState(() => {
+    //const data = PRODUTOS_INICIAIS;
+    //localStorage.setItem('produtos', JSON.stringify(data));
+    const salvos = localStorage.getItem('produtos');
+    return salvos ? JSON.parse(salvos) : [];
+  });
+
+
 
   const adicionarItem = () => {
     if (!produtoSelecionado || quantidadeDesejada <= 0) return alert('Selecione um produto válido.');
@@ -27,14 +30,14 @@ const TelaCaixa = () => {
     const produtoNoEstoque = estoque.find(p => p.id === Number(produtoSelecionado));
     if (!produtoNoEstoque) return alert('Produto não encontrado.');
 
-    if (Number(quantidadeDesejada) > Number(produtoNoEstoque.estoque)) {
-      return alert(`Estoque insuficiente! Temos ${produtoNoEstoque.estoque} unidades.`);
+    if (Number(quantidadeDesejada) > Number(produtoNoEstoque.stock)) {
+      return alert(`Estoque insuficiente! Temos ${produtoNoEstoque.stock} unidades.`);
     }
 
     const itemJaNoCarrinho = carrinho.find(item => item.id === produtoNoEstoque.id);
     
     if (itemJaNoCarrinho) {
-      if (itemJaNoCarrinho.quantidade + Number(quantidadeDesejada) > produtoNoEstoque.estoque) {
+      if (itemJaNoCarrinho.quantidade + Number(quantidadeDesejada) > produtoNoEstoque.stock) {
         return alert('Quantidade excede o estoque disponível.');
       }
       const novoCarrinho = carrinho.map(item => 
@@ -44,8 +47,14 @@ const TelaCaixa = () => {
       );
       setCarrinho(novoCarrinho);
     } else {
-      setCarrinho([...carrinho, { ...produtoNoEstoque, quantidade: Number(quantidadeDesejada) }]);
+      setCarrinho([...carrinho, {
+          id: produtoNoEstoque.id,
+          nome: produtoNoEstoque.productName,
+          preco: produtoNoEstoque.price,
+          quantidade: Number(quantidadeDesejada)
+        }]);
     }
+    
     setProdutoSelecionado('');
     setQuantidadeDesejada(1);
   };
@@ -57,21 +66,8 @@ const TelaCaixa = () => {
   const finalizarCompra = () => {
     if (carrinho.length === 0) return alert('O carrinho está vazio.');
     if (Number(valorPago) < totalCompra) return alert('Valor pago é insuficiente!');
-
-    // Desconta do estoque
-    const novoEstoque = [...estoque];
-    carrinho.forEach(itemVendido => {
-      const index = novoEstoque.findIndex(p => p.id === itemVendido.id);
-      if (index !== -1) {
-        novoEstoque[index].estoque = Number(novoEstoque[index].estoque) - Number(itemVendido.quantidade);
-      }
-    });
-
-    setEstoque(novoEstoque);
-    localStorage.setItem('estoque_v5', JSON.stringify(novoEstoque)); // Salva o novo estoque
-    
+    vender(carrinho);
     alert(`Venda finalizada com sucesso! Troco: R$ ${troco.toFixed(2)}`);
-    setCodVenda(Math.floor(Math.random() * 9000) + 1000);
     setCarrinho([]);
     setValorPago('');
   };
@@ -79,7 +75,7 @@ const TelaCaixa = () => {
   return (
     <div className="pdv-container">
       <div className="pdv-esquerda">
-        <h2 className="pdv-titulo">SISTEMA DE VENDAS</h2>
+        <h2 className="pdv-titulo">Impacta Store</h2>
         
         <div className="tabela-container">
           <table className="tabela-pdv">
@@ -105,8 +101,8 @@ const TelaCaixa = () => {
             <label>Escolher Produto</label>
             <select value={produtoSelecionado} onChange={e => setProdutoSelecionado(e.target.value)}>
               <option value="">Selecione...</option>
-              {estoque.filter(p => p.estoque > 0).map(p => (
-                <option key={p.id} value={p.id}>{p.nome} (Est. {p.estoque})</option>
+              {estoque.map(p => (
+                <option key={p.id} value={p.id}>{p.productName} (Est. {p.stock})</option>
               ))}
             </select>
           </div>
@@ -119,9 +115,7 @@ const TelaCaixa = () => {
       </div>
 
       <div className="pdv-direita">
-        <div className="pdv-logo"><h1>CAIXA LIVRE</h1></div>
         <div className="pdv-detalhes">
-          <p><span>CÓD. VENDA</span> <strong>#{codVenda}</strong></p>
           <p><span>QUANT PRODUTOS</span> <strong>{totalItens}</strong></p>
           <p><span>HORA</span> <strong>{dataHora.toLocaleTimeString()}</strong></p>
         </div>
