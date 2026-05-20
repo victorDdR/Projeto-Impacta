@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import './styles/App.css'
 
 import Menu from './components/Menu/Menu';
-import ListagemProdutos from './pages/ListagemProdutos/ListagemProdutos';
+import ListagemProdutos from './pages/ListagemProdutos/ListagemProdutos'
 import CadastroProduto from './pages/CadastroProdutos/CadastroProduto';
 import TelaCaixa from './pages/TelaCaixa/TelaCaixa';
 

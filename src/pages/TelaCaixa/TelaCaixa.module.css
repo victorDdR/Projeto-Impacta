@@ -1,0 +1,186 @@
+/* ======== TELA PDV (FRENTE DE CAIXA) ======== */
+.pdvContainer {
+  display: flex;
+  background: #eef2f5;
+  color: #333;
+  width: 100%;
+  max-width: 900px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  overflow: hidden;
+  border: 4px solid #b0c4de;
+  margin: 40px auto;
+}
+
+/* Esquerda do PDV (Tabela) */
+.pdvEsquerda {
+  width: 65%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid #ccc;
+}
+
+.pdvTitulo {
+  margin-top: 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.tabelaContainer {
+  background: white;
+  border: 1px solid #ccc;
+  height: 300px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.tabelaPdv {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabelaPdv th {
+  background: #2c3e50;
+  color: white;
+  padding: 10px;
+  text-align: left;
+  font-size: 12px;
+  position: sticky;
+  top: 0;
+}
+
+.tabelaPdv td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.pdvControles {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.pdvCampo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.pdvCampo label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.pdvCampo input,
+.pdvCampo select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.pdvCampoPequeno {
+  display: flex;
+  flex-direction: column;
+  width: 80px;
+}
+
+.btnAddItem {
+  background: #e0e6ed;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  height: 38px;
+}
+
+.btnAddItem:hover {
+  background: #d1d8e0;
+}
+
+/* Direita do PDV (Resumo) */
+.pdvDireita {
+  width: 35%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.pdvDetalhes p {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+  padding: 8px 0;
+  margin: 0;
+  font-size: 13px;
+  color: #7f8c8d;
+}
+
+.pdvDetalhes p strong {
+  color: #333;
+}
+
+.pdvFechamento {
+  margin-top: 20px;
+}
+
+.pdvTotal {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.pdvTotal span {
+  color: #c0392b;
+}
+
+.pdvPagamento {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.pdvPagamento input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btnPagar {
+  background: #2c3e50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btnPagar:hover {
+  background: #1a252f;
+}
+
+.pdvTroco {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pdvTroco span {
+  color: #27ae60;
+}

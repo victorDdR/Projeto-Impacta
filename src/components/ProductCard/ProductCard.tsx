@@ -1,7 +1,13 @@
-import { deletarProduto } from '../../api/ProductAPI';
+import { deletarProduto } from '../../services/productService';
 import styles from './ProductCard.module.css';
+import { Product } from '../../types/Product';
 
-function ProductCard({ produto, onDelete}) {
+interface ProductCardProps {
+  produto: Product;
+  onDelete: () => void;
+}
+
+function ProductCard({ produto, onDelete }: ProductCardProps) {
   const precoFormatado = Number(produto.price).toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
   });
