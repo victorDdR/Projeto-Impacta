@@ -88,20 +88,22 @@ function CadastroProduto() {
         <div className={styles.field}>
         <label className={styles.label}>Categoria</label>
 
-        <select
+        <input
             className={styles.select}
+            list="lista-categorias"
             name="category"
             value={form.category}
             onChange={handleChange}
-        >
-            <option value="">Selecione uma categoria</option>
-
+            placeholder="Selecione ou digite a categoria"
+            autoComplete="off"
+        />
+        
+        <datalist id="lista-categorias">
             {categorias.map((categoria) => (
-            <option key={categoria.id} value={categoria.id}>
-                {categoria.name}
-            </option>
+                <option key={categoria.id} value={categoria.name} />
             ))}
-        </select>
+        </datalist>
+
         </div>
 
         <div className={styles.field}>
