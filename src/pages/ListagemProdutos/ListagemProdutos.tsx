@@ -34,15 +34,17 @@ function ListagemProdutos() {
     useEffect(() => {
     // Aqui nós chamamos a API oficial (a rota que o seu colega criou)
     fetch('/impacta/products')
-      .then((resposta) => resposta.json()) // Transforma a resposta do Java em algo que o React entenda
+      .then((resposta) => resposta.json())
       .then((dadosReais) => {
         setProdutos(dadosReais); // Salva os produtos do banco na tela!
+        setLoading(false);
       })
       .catch((erro) => {
         console.error("Erro ao buscar produtos da API:", erro);
+        setLoading(false);
       });
   }, []);
-
+  
     if (loading) {
     return (
         <div className={styles.container}>
