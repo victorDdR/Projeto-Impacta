@@ -12,6 +12,10 @@ const TelaCaixa: React.FC = () => {
   const [valorPago, setValorPago] = useState<number | "">("");
   const [dataHora, setDataHora] = useState<Date>(new Date());
 
+  // --- NOVOS ESTADOS PARA O HISTÓRICO DE VENDAS ---
+  const [historicoVendas, setHistoricoVendas] = useState<any[]>([]);
+  const [mostrarHistorico, setMostrarHistorico] = useState<boolean>(false);
+
   const [estoque, setEstoque] = useState<Product[]>(() => {
     const salvos = localStorage.getItem("produtos");
     return salvos ? (JSON.parse(salvos) as Product[]) : [];
@@ -103,11 +107,25 @@ const TelaCaixa: React.FC = () => {
     try {
       await vender(carrinho);
       alert(`Venda finalizada com sucesso! Troco: R$ ${troco.toFixed(2)}`);
+      
+      // Quando finalizar, já adiciona no histórico local para testes
+      const novaVendaFeita = {
+        id: `#${Math.floor(Math.random() * 9000) + 1000}`,
+        total: totalCompra,
+        data: new Date().toLocaleTimeString()
+      };
+      setHistoricoVendas(prev => [novaVendaFeita, ...prev]);
+
       setCarrinho([]);
       setValorPago("");
     } catch (error) {
       alert("Erro ao finalizar a venda.");
     }
+  };
+
+  // --- NOVA FUNÇÃO PARA ABRIR O HISTÓRICO ---
+  const carregarHistorico = () => {
+    setMostrarHistorico(!mostrarHistorico);
   };
 
   return (
@@ -213,6 +231,44 @@ const TelaCaixa: React.FC = () => {
             TROCO <span>R$ {troco.toFixed(2)}</span>
           </div>
         </div>
+
+        {/* --- NOVO BLOCO DO HISTÓRICO DE VENDAS --- */}
+        <button 
+          className={styles.btnPagar} 
+          style={{ marginTop: '20px', width: '100%', backgroundColor: '#555' }} 
+          onClick={carregarHistorico}
+        >
+          {mostrarHistorico ? "Esconder Histórico" : "Ver Histórico de Vendas"}
+        </button>
+
+        {mostrarHistorico && (
+          <div className={styles.tabelaContainer} style={{ marginTop: '20px' }}>
+            <table className={styles.tabelaPdv}>
+              <thead>
+                <tr>
+                  <th>CÓDIGO</th>
+                  <th>HORA</th>
+                  <th>TOTAL DA VENDA</th>
+                </tr>
+              </thead>
+              <tbody>
+                {historicoVendas.length === 0 ? (
+                   <tr><td colSpan={3} style={{textAlign: 'center'}}>Nenhuma venda finalizada ainda.</td></tr>
+                ) : (
+                  historicoVendas.map((venda, index) => (
+                    <tr key={index}>
+                      <td>{venda.id}</td>
+                      <td>{venda.data}</td>
+                      <td>R$ {venda.total.toFixed(2)}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {/* --- FIM DO NOVO BLOCO --- */}
+
       </div>
     </div>
   );
