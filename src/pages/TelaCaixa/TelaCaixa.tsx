@@ -12,9 +12,11 @@ const TelaCaixa: React.FC = () => {
   const [valorPago, setValorPago] = useState<number | "">("");
   const [dataHora, setDataHora] = useState<Date>(new Date());
 
-  // --- NOVOS ESTADOS PARA O HISTÓRICO DE VENDAS ---
   const [historicoVendas, setHistoricoVendas] = useState<any[]>([]);
   const [mostrarHistorico, setMostrarHistorico] = useState<boolean>(false);
+  
+  // --- NOVO ESTADO PARA O POP-UP DE DETALHES DA VENDA ---
+  const [vendaSelecionada, setVendaSelecionada] = useState<any | null>(null);
 
   const [estoque, setEstoque] = useState<Product[]>(() => {
     const salvos = localStorage.getItem("produtos");
@@ -108,12 +110,14 @@ const TelaCaixa: React.FC = () => {
       await vender(carrinho);
       alert(`Venda finalizada com sucesso! Troco: R$ ${troco.toFixed(2)}`);
       
-      // Quando finalizar, já adiciona no histórico local para testes
+      // Agora salvamos os ITENS do carrinho também para poder mostrar no recibo!
       const novaVendaFeita = {
         id: `#${Math.floor(Math.random() * 9000) + 1000}`,
         total: totalCompra,
-        data: new Date().toLocaleTimeString()
+        data: new Date().toLocaleTimeString(),
+        itens: [...carrinho] 
       };
+      
       setHistoricoVendas(prev => [novaVendaFeita, ...prev]);
 
       setCarrinho([]);
@@ -123,7 +127,6 @@ const TelaCaixa: React.FC = () => {
     }
   };
 
-  // --- NOVA FUNÇÃO PARA ABRIR O HISTÓRICO ---
   const carregarHistorico = () => {
     setMostrarHistorico(!mostrarHistorico);
   };
@@ -232,7 +235,6 @@ const TelaCaixa: React.FC = () => {
           </div>
         </div>
 
-        {/* --- NOVO BLOCO DO HISTÓRICO DE VENDAS --- */}
         <button 
           className={styles.btnPagar} 
           style={{ marginTop: '20px', width: '100%', backgroundColor: '#555' }} 
@@ -247,19 +249,27 @@ const TelaCaixa: React.FC = () => {
               <thead>
                 <tr>
                   <th>CÓDIGO</th>
-                  <th>HORA</th>
                   <th>TOTAL DA VENDA</th>
+                  <th>AÇÃO</th>
                 </tr>
               </thead>
               <tbody>
                 {historicoVendas.length === 0 ? (
-                   <tr><td colSpan={3} style={{textAlign: 'center'}}>Nenhuma venda finalizada ainda.</td></tr>
+                   <tr><td colSpan={3} style={{textAlign: 'center'}}>Nenhuma venda finalizada.</td></tr>
                 ) : (
                   historicoVendas.map((venda, index) => (
                     <tr key={index}>
                       <td>{venda.id}</td>
-                      <td>{venda.data}</td>
                       <td>R$ {venda.total.toFixed(2)}</td>
+                      <td>
+                        {/* Botão que abre o Pop-up de detalhes */}
+                        <button 
+                          onClick={() => setVendaSelecionada(venda)}
+                          style={{ padding: '5px 10px', cursor: 'pointer', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '3px' }}
+                        >
+                          Ver Itens
+                        </button>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -267,9 +277,61 @@ const TelaCaixa: React.FC = () => {
             </table>
           </div>
         )}
-        {/* --- FIM DO NOVO BLOCO --- */}
-
       </div>
+
+      {/* --- A MÁGICA DO POP-UP (MODAL DE DETALHES) --- */}
+      {vendaSelecionada && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+          backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: '#fff', color: '#333', padding: '25px', borderRadius: '8px', width: '450px', maxWidth: '90%', boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+          }}>
+            <h3 style={{ textAlign: 'center', borderBottom: '1px dashed #ccc', paddingBottom: '10px', marginTop: 0 }}>
+              CUPOM FISCAL - {vendaSelecionada.id}
+            </h3>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px', fontSize: '14px' }}>
+              <span><strong>Data/Hora:</strong> {vendaSelecionada.data}</span>
+              <span><strong>Operador:</strong> Admin</span>
+            </div>
+            
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #ddd', textAlign: 'left' }}>
+                  <th style={{ paddingBottom: '5px' }}>Qtd</th>
+                  <th style={{ paddingBottom: '5px' }}>Descrição</th>
+                  <th style={{ paddingBottom: '5px', textAlign: 'right' }}>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vendaSelecionada.itens?.map((item: any, idx: number) => (
+                  <tr key={idx} style={{ borderBottom: '1px solid #eee' }}>
+                    <td style={{ padding: '8px 0' }}>{item.quantity}x</td>
+                    <td style={{ padding: '8px 0' }}>{item.name}</td>
+                    <td style={{ padding: '8px 0', textAlign: 'right' }}>
+                      R$ {(item.unit_price * item.quantity).toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            
+            <h2 style={{ textAlign: 'right', marginTop: '20px', color: '#000' }}>
+              Total: R$ {vendaSelecionada.total.toFixed(2)}
+            </h2>
+            
+            <button 
+              onClick={() => setVendaSelecionada(null)}
+              style={{ width: '100%', padding: '12px', marginTop: '10px', backgroundColor: '#e74c3c', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold', fontSize: '16px' }}
+            >
+              Fechar Recibo
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
