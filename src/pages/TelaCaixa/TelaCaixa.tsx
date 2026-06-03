@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./TelaCaixa.module.css";
 import { vender } from "../../services/saleService";
+import { buscarProdutos } from "../../services/productService"; // <-- IMPORTAÇÃO ADICIONADA AQUI
 
 import { Product } from "../../types/Product";
 import { CartItem } from "../../types/CartItem";
@@ -15,16 +16,29 @@ const TelaCaixa: React.FC = () => {
   const [historicoVendas, setHistoricoVendas] = useState<any[]>([]);
   const [mostrarHistorico, setMostrarHistorico] = useState<boolean>(false);
   
-  // --- NOVO ESTADO PARA O POP-UP DE DETALHES DA VENDA ---
   const [vendaSelecionada, setVendaSelecionada] = useState<any | null>(null);
 
-  const [estoque, setEstoque] = useState<Product[]>(() => {
-    const salvos = localStorage.getItem("produtos");
-    return salvos ? (JSON.parse(salvos) as Product[]) : [];
-  });
+  // --- ALTERAÇÃO AQUI: Começa vazio em vez de puxar do cache direto ---
+  const [estoque, setEstoque] = useState<Product[]>([]);
 
   useEffect(() => {
+    // 1. Relógio do caixa
     const timer = setInterval(() => setDataHora(new Date()), 1000);
+    
+    // 2. Busca o estoque real e fresco na API!
+    const carregarEstoque = async () => {
+      try {
+        const page = await buscarProdutos();
+        setEstoque(page.content); // Pega os produtos oficiais do banco
+      } catch (error) {
+        // Se a API falhar (Back-end desligado), usa o cache de segurança para não quebrar a tela
+        const salvos = localStorage.getItem("produtos");
+        if (salvos) setEstoque(JSON.parse(salvos) as Product[]);
+      }
+    };
+    
+    carregarEstoque();
+
     return () => clearInterval(timer);
   }, []);
 
@@ -110,7 +124,6 @@ const TelaCaixa: React.FC = () => {
       await vender(carrinho);
       alert(`Venda finalizada com sucesso! Troco: R$ ${troco.toFixed(2)}`);
       
-      // Agora salvamos os ITENS do carrinho também para poder mostrar no recibo!
       const novaVendaFeita = {
         id: `#${Math.floor(Math.random() * 9000) + 1000}`,
         total: totalCompra,
@@ -262,7 +275,6 @@ const TelaCaixa: React.FC = () => {
                       <td>{venda.id}</td>
                       <td>R$ {venda.total.toFixed(2)}</td>
                       <td>
-                        {/* Botão que abre o Pop-up de detalhes */}
                         <button 
                           onClick={() => setVendaSelecionada(venda)}
                           style={{ padding: '5px 10px', cursor: 'pointer', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '3px' }}
@@ -279,7 +291,6 @@ const TelaCaixa: React.FC = () => {
         )}
       </div>
 
-      {/* --- A MÁGICA DO POP-UP (MODAL DE DETALHES) --- */}
       {vendaSelecionada && (
         <div style={{
           position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
