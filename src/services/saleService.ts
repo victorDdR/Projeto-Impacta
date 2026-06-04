@@ -27,7 +27,8 @@ export async function vender(carrinho: CartItem[]): Promise<void> {
   }
 }
 
-export const buscarProdutos = async (): Promise<Page<SaleResponse>> => {
+// CORRIGIMOS O NOME AQUI: de buscarProdutos para buscarVendas!
+export const buscarVendas = async (): Promise<Page<SaleResponse>> => {
   const response = await fetch(`${API_URL}`);
 
   if (!response.ok) {
