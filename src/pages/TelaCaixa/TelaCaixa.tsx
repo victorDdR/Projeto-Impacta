@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import styles from "./TelaCaixa.module.css";
-import { vender } from "../../services/saleService";
+import { vender } from "../../services/saleService"; 
+import { buscarProdutos } from "../../services/productService"; 
+import HistoricoVendas from "./HistoricoVendas"; // IMPORTAMOS O COMPONENTE NOVO
 
 import { Product } from "../../types/Product";
 import { CartItem } from "../../types/CartItem";
@@ -12,13 +14,24 @@ const TelaCaixa: React.FC = () => {
   const [valorPago, setValorPago] = useState<number | "">("");
   const [dataHora, setDataHora] = useState<Date>(new Date());
 
-  const [estoque, setEstoque] = useState<Product[]>(() => {
-    const salvos = localStorage.getItem("produtos");
-    return salvos ? (JSON.parse(salvos) as Product[]) : [];
-  });
+  const [mostrarHistorico, setMostrarHistorico] = useState<boolean>(false);
+  const [estoque, setEstoque] = useState<Product[]>([]);
 
   useEffect(() => {
     const timer = setInterval(() => setDataHora(new Date()), 1000);
+    
+    const carregarEstoque = async () => {
+      try {
+        const page = await buscarProdutos();
+        setEstoque(page.content); 
+      } catch (error) {
+        const salvos = localStorage.getItem("produtos");
+        if (salvos) setEstoque(JSON.parse(salvos) as Product[]);
+      }
+    };
+    
+    carregarEstoque();
+
     return () => clearInterval(timer);
   }, []);
 
@@ -103,8 +116,10 @@ const TelaCaixa: React.FC = () => {
     try {
       await vender(carrinho);
       alert(`Venda finalizada com sucesso! Troco: R$ ${troco.toFixed(2)}`);
+      
       setCarrinho([]);
       setValorPago("");
+      setMostrarHistorico(false);
     } catch (error) {
       alert("Erro ao finalizar a venda.");
     }
@@ -213,6 +228,18 @@ const TelaCaixa: React.FC = () => {
             TROCO <span>R$ {troco.toFixed(2)}</span>
           </div>
         </div>
+
+        <button 
+          className={styles.btnPagar} 
+          style={{ marginTop: '20px', width: '100%', backgroundColor: '#555' }} 
+          onClick={() => setMostrarHistorico(!mostrarHistorico)}
+        >
+          {mostrarHistorico ? "Esconder Histórico" : "Ver Histórico de Vendas"}
+        </button>
+
+        {/* MÁGICA: Renderiza o componente novo apenas quando o botão for clicado! */}
+        {mostrarHistorico && <HistoricoVendas />}
+        
       </div>
     </div>
   );
