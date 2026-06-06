@@ -9,6 +9,7 @@ import  CartTable from '../../components/CashRegister/CartTable';
 import ProductsSelection from '../../components/CashRegister/ProductsSelection';
 import SaleDetails from '../../components/CashRegister/SaleDetails';
 import Sale from '../../components/CashRegister/Sale';
+import Sales from "../../components/CashRegister/Sales";
 
 const TelaCaixa: React.FC = () => {
   const [carrinho, setCarrinho] = useState<CartItem[]>([]);
@@ -21,6 +22,7 @@ const TelaCaixa: React.FC = () => {
     const produtosSalvos = localStorage.getItem("produtos");
     return produtosSalvos ? JSON.parse(produtosSalvos) : [];
   });
+  const [mostrarHistorico, setMostrarHistorico] = useState<boolean>(false);
 
   useEffect(() => {
     const timer = setInterval(() => setDataHora(new Date()), 1000);
@@ -113,6 +115,15 @@ const TelaCaixa: React.FC = () => {
           onAlterarValorPago={setValorPago}
           onFinalizar={finalizarCompra}
         />
+
+        <button 
+        className={styles.btnPagar} 
+        style={{ marginTop: '20px', width: '100%', backgroundColor: '#555' }} 
+        onClick={() => setMostrarHistorico(!mostrarHistorico)}
+      >
+        {mostrarHistorico ? "Esconder Histórico" : "Ver Histórico de Vendas"}
+      </button>
+      {mostrarHistorico && <Sales />}
       </div>
     </div>
   );
