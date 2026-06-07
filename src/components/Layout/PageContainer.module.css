@@ -1,0 +1,7 @@
+.pageContainer {
+  min-height: calc(100vh - 60px); /* altura do menu */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
